@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <!-- Monthly Attendance Statistics -->
+    <div class="col-12 mb-4">
+        <div class="card p-4">
+            <h4>Monthly Attendance Statistics</h4>
+            <hr>
+            {% if monthly_stats %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Month</th>
+                            <th>Present</th>
+                            <th>Absent</th>
+                            <th>Medical</th>
+                            <th>Total</th>
+                            <th>Attendance %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for month, stats in monthly_stats.items() %}
+                        <tr>
+                            <td><strong>{{ month }}</strong></td>
+                            <td><span class="badge bg-success">{{ stats.present }}</span></td>
+                            <td><span class="badge bg-danger">{{ stats.absent }}</span></td>
+                            <td><span class="badge bg-info">{{ stats.medical }}</span></td>
+                            <td>{{ stats.total }}</td>
+                            <td>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar {% if stats.percentage >= 75 %}bg-success{% elif stats.percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}" role="progressbar" aria-valuenow="{{ stats.percentage }}" aria-valuemin="0" aria-valuemax="100" {% if stats.percentage %}style="width: {{ stats.percentage }}%;"{% endif %}>{{ stats.percentage }}%</div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">No attendance records available.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Medical Report Upload Link -->
+    <div class="col-12 mb-4">
+        <div class="card p-4 bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-0">Medical Report</h5>
+                    <p class="text-muted small mb-0">Submit a medical report for absences</p>
+                </div>
+                <a href="{{ url_for('upload_medical') }}" class="btn btn-info">Upload Medical Report</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance History -->
+    <div class="col-12">
+        <div class="card p-4">
+            <h4>My Attendance History</h4>
+            <hr>
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Course Code</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        <td>{{ record.date }}</td>
+                        <td>{{ record.course_code }}</td>
+                        <td>
+                            {% if record.status == 'Present' %}
+                                <span class="badge bg-success">Present</span>
+                            {% elif record.status == 'Medical' %}
+                                <span class="badge bg-info">Medical</span>
+                            {% else %}
+                                <span class="badge bg-danger">Absent</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" class="text-center">No attendance records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

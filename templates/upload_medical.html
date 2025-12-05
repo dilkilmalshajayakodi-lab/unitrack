@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Upload Medical Report Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card p-4">
+                <h4 class="mb-3">Upload Medical Report</h4>
+                <p class="text-muted small">Submit a medical report for an absence to have it marked as "Medical"</p>
+                
+                {% if not absences %}
+                <div class="alert alert-info">
+                    No pending absences available for medical report submission.
+                </div>
+                {% else %}
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="attendance_id" class="form-label">Select Absence</label>
+                        <select name="attendance_id" id="attendance_id" class="form-select" required>
+                            <option value="">-- Select an absence --</option>
+                            {% for absence in absences %}
+                            <option value="{{ absence.id }}">
+                                {{ absence.date }} - {{ absence.course_code }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reason" class="form-label">Reason (Optional)</label>
+                        <textarea name="reason" id="reason" class="form-control" rows="3" placeholder="Explain your absence..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="document" class="form-label">Upload Document</label>
+                        <input type="file" name="document" id="document" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" required>
+                        <small class="form-text text-muted">Accepted: PDF, JPG, PNG, DOC, DOCX (Max 16MB)</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Submit Medical Report</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Medical Reports Status Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card p-4">
+                <h4 class="mb-3">My Medical Reports</h4>
+                
+                {% if not medical_reports %}
+                <div class="alert alert-info">
+                    No medical reports submitted yet.
+                </div>
+                {% else %}
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr class="table-secondary">
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Submitted</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in medical_reports %}
+                            <tr>
+                                <td>{{ report.date_submitted.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    {% if report.approved %}
+                                    <span class="badge bg-success">Approved</span>
+                                    {% else %}
+                                    <span class="badge bg-warning">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ report.date_submitted.strftime('%H:%M') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

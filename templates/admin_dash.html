@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <!-- Form Side -->
+    <div class="col-md-4 mb-4">
+        <div class="card p-3">
+            <h5 class="text-primary">Mark Attendance</h5>
+            <form method="POST">
+                <div class="mb-2">
+                    <label>Student Index</label>
+                    <input type="text" name="student_index" class="form-control" placeholder="S1234" required>
+                </div>
+                <div class="mb-2">
+                    <label>Course Code</label>
+                    <select name="course" class="form-select" required>
+                        <option value="">Select a course</option>
+                        <option value="NANO2112 - Mathematics for Nano Science Technology I">NANO2112 - Mathematics for Nano Science Technology I (Dr. (Ms.) Chathurangani Karunarathna)</option>
+                        <option value="NANO2122 - Fundamentals of Nano-Electronics">NANO2122 - Fundamentals of Nano-Electronics (Dr. Asanka Rajapaksha)</option>
+                        <option value="NANO2132 - Digital Electronics">NANO2132 - Digital Electronics (Dr. (Ms.) Upeka Samarakoon)</option>
+                        <option value="NANO2142 - Introduction to Software Development">NANO2142 - Introduction to Software Development (Dr. Upanith Liyanaarachchi)</option>
+                        <option value="NANO2151 - Principles of Material Science Engineering">NANO2151 - Principles of Material Science Engineering (Dr. (Ms.) Chathurangani Karunarathna)</option>
+                        <option value="NANO2162 - Engineering Design & Drawings">NANO2162 - Engineering Design & Drawings (Dr. Ashane Fernando)</option>
+                        <option value="NANO2172 - Physical Chemistry for Nanotechnology">NANO2172 - Physical Chemistry for Nanotechnology (Dr. Murthi Kandanapitiye)</option>
+                        <option value="NANO2182 - Management for Technology">NANO2182 - Management for Technology (Ms. Malithi De Costa)</option>
+                        <option value="ETCH2111 - English Language & Communication Skills II">ETCH2111 - English Language & Communication Skills II (Ms. Sajeewani Fernando)</option>
+                        <option value="PDEV2110 - Career Development II">PDEV2110 - Career Development II (Dr. Mihira Wanninayake)</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label>Date</label>
+                    <input type="date" name="date" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Status</label>
+                    <select name="status" class="form-select">
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success w-100">Save Record</button>
+            </form>
+        </div>
+        <div class="card p-3 mt-3">
+            <h5 class="text-primary">Mark Attendance by Subject</h5>
+            <p class="small text-muted">Select a subject and date to mark attendance for all enrolled students</p>
+            <a href="{{ url_for('mark_attendance_bulk') }}" class="btn btn-success w-100">Mark by Subject</a>
+        </div>
+        <div class="card p-3 mt-3">
+            <h5 class="text-primary">Bulk Upload Attendance</h5>
+            <p class="small text-muted">Upload attendance records from a CSV file for a specific course</p>
+            <a href="{{ url_for('bulk_upload') }}" class="btn btn-info w-100">Upload CSV File</a>
+        </div>
+    </div>
+
+    <!-- Table Side -->
+    <div class="col-md-8">
+        <div class="card p-3">
+            <h5>All Attendance Records</h5>
+            {% if is_administrator %}
+            <form method="POST" class="mb-3">
+                <button type="submit" name="export_attendance" class="btn btn-outline-primary">Export Attendance as CSV</button>
+            </form>
+            {% endif %}
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr class="table-secondary">
+                            <th>Student Index</th>
+                            <th>Date</th>
+                            <th>Course</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in records %}
+                        <tr>
+                            <td>{{ record.student_index }}</td>
+                            <td>{{ record.date }}</td>
+                            <td>{{ record.course_code }}</td>
+                            <td>{{ record.status }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% if is_administrator %}
+        <div class="card p-3 mt-4">
+            <h5>User Management</h5>
+            <form method="POST" class="row g-2 mb-3">
+                <input type="hidden" name="add_user" value="1">
+                <div class="col-md-2"><input type="text" name="add_index" class="form-control" placeholder="Index" required></div>
+                <div class="col-md-3"><input type="text" name="add_name" class="form-control" placeholder="Name" required></div>
+                <div class="col-md-3"><input type="password" name="add_password" class="form-control" placeholder="Password" required></div>
+                <div class="col-md-2">
+                    <select name="add_role" class="form-select">
+                        <option value="student">Student</option>
+                        <option value="admin">Admin</option>
+                        <option value="administrator">Administrator</option>
+                    </select>
+                </div>
+                <div class="col-md-2"><button type="submit" class="btn btn-success w-100">Add User</button></div>
+            </form>
+            <form method="POST" class="row g-2 mb-3">
+                <input type="hidden" name="remove_user" value="1">
+                <div class="col-md-4"><input type="text" name="remove_index" class="form-control" placeholder="Index to Remove" required></div>
+                <div class="col-md-2"><button type="submit" class="btn btn-danger w-100">Remove User</button></div>
+            </form>
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr class="table-secondary">
+                            <th>Index</th>
+                            <th>Name</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.index_number }}</td>
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.role }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+        <div class="card p-3 mt-4">
+            <h5>Pending Medical Reports</h5>
+            {% if medical_reports_pending %}
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr class="table-secondary">
+                            <th>Student</th>
+                            <th>Absence Date</th>
+                            <th>Course</th>
+                            <th>Submitted</th>
+                            <th>Reason</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in medical_reports_pending %}
+                        {% set attendance = report.attendance_obj %}
+                        <tr>
+                            <td>{{ report.student_index }}</td>
+                            <td>{{ attendance.date if attendance else 'N/A' }}</td>
+                            <td>{{ attendance.course_code if attendance else 'N/A' }}</td>
+                            <td>{{ report.date_submitted.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ report.reason[:50] if report.reason else 'No reason provided' }}</td>
+                            <td>
+                                <form method="POST" style="display: inline;">
+                                    <a href="{{ report.document_path }}" target="_blank" class="btn btn-sm btn-secondary">View Document</a>
+                                    <button type="submit" formaction="{{ url_for('approve_medical', report_id=report.id) }}" class="btn btn-sm btn-success">Approve</button>
+                                    <button type="submit" formaction="{{ url_for('reject_medical', report_id=report.id) }}" class="btn btn-sm btn-danger">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">No pending medical reports.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

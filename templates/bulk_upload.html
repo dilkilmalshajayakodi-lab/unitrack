@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card p-4 mt-4">
+            <h4 class="mb-3">Bulk Upload Attendance</h4>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="course" class="form-label">Select Course</label>
+                    <select name="course" id="course" class="form-select" required>
+                        <option value="">-- Select a course --</option>
+                        <option value="NANO2112 - Mathematics for Nano Science Technology I">NANO2112 - Mathematics for Nano Science Technology I</option>
+                        <option value="NANO2122 - Fundamentals of Nano-Electronics">NANO2122 - Fundamentals of Nano-Electronics</option>
+                        <option value="NANO2132 - Digital Electronics">NANO2132 - Digital Electronics</option>
+                        <option value="NANO2142 - Introduction to Software Development">NANO2142 - Introduction to Software Development</option>
+                        <option value="NANO2151 - Principles of Material Science Engineering">NANO2151 - Principles of Material Science Engineering</option>
+                        <option value="NANO2162 - Engineering Design & Drawings">NANO2162 - Engineering Design & Drawings</option>
+                        <option value="NANO2172 - Physical Chemistry for Nanotechnology">NANO2172 - Physical Chemistry for Nanotechnology</option>
+                        <option value="NANO2182 - Management for Technology">NANO2182 - Management for Technology</option>
+                        <option value="ETCH2111 - English Language & Communication Skills II">ETCH2111 - English Language & Communication Skills II</option>
+                        <option value="PDEV2110 - Career Development II">PDEV2110 - Career Development II</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="csv_file" class="form-label">Upload CSV File</label>
+                    <input type="file" class="form-control" id="csv_file" name="csv_file" accept=".csv" required>
+                    <small class="form-text text-muted">CSV format: student_index,date,status (one record per line)</small>
+                </div>
+                <div class="alert alert-info" role="alert">
+                    <strong>CSV Format Required:</strong>
+                    <ul>
+                        <li>Header row: <code>student_index,date,status</code></li>
+                        <li>Date format: <code>YYYY-MM-DD</code></li>
+                        <li>Status: <code>Present</code> or <code>Absent</code></li>
+                        <li>Example:<br>
+                            <code>student_index,date,status</code><br>
+                            <code>S1234,2024-12-04,Present</code><br>
+                            <code>S1235,2024-12-04,Absent</code>
+                        </li>
+                    </ul>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Upload Attendance</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
